@@ -1,0 +1,80 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+    labels:
+        app.kubernetes.io/instance: kuma
+        app.kubernetes.io/name: kuma
+    name: kuma-admission-mutating-webhook-configuration
+    namespace: kuma-system
+webhooks:
+    - admissionReviewVersions:
+        - v1beta1
+      clientConfig:
+        caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURFRENDQWZpZ0F3SUJBZ0lSQU84Vm1ERnAvaVhBS0IzdXZON0ZjdDh3RFFZSktvWklodmNOQVFFTEJRQXcKRWpFUU1BNEdBMVVFQXhNSGEzVnRZUzFqWVRBZUZ3MHlNVEE0TURNeU16STBOVE5hRncwek1UQTRNREV5TXpJMApOVE5hTUJJeEVEQU9CZ05WQkFNVEIydDFiV0V0WTJFd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3CmdnRUtBb0lCQVFER2lRdXJZUDIyRnplK0FDWEdWaGZRemxERVJrSHJLTTVnTXhRTkcxMFRLT3RKOVJBQjV0VWYKSndGSUliYmNnSlRUa3diN20yQzIzOW5RODBYRXVBbFlheHhyZzY3MTZ4ZzlUdzA3WGNqTjV0eXV6dHBubWNPYgp4MmJWVXNaZFFzODhiWVF5SjdCcXExTFBURDZwd0czR0s0cWFOR2FHNjhrVThLZU5RVGE5eE4wcG5VR3ZWaldOCmVVSDZmVVFKNlQvajEvT1c0NFVmeFM1cndNL2huQ1lVWktzeFA1d3ZwNk5heThJUEVxbDhNNTkxTUxVc215clEKeUdiR2JaM0JERGZLWWhXbXp4enhucjkvZWlmRkVaWm9laE9MV01pbW9hWmdHdlhsWVhsSUVoV2NGRkhHaXI2LwpOOWV1M1R2MTA3NWRaL1RkOWpSR0orL3FDN2hpVEJ3VEFnTUJBQUdqWVRCZk1BNEdBMVVkRHdFQi93UUVBd0lDCnBEQWRCZ05WSFNVRUZqQVVCZ2dyQmdFRkJRY0RBUVlJS3dZQkJRVUhBd0l3RHdZRFZSMFRBUUgvQkFVd0F3RUIKL3pBZEJnTlZIUTRFRmdRVTJsMURrRGJXSmxhT2c0YnFjNUM2NHJpOVRsSXdEUVlKS29aSWh2Y05BUUVMQlFBRApnZ0VCQUJwa2hyTVhIQzdmQWd5S0ZnM2UzU3B6VWhQOTl5Y0dWQjdkdWxmcDJiVVVtNURyUXVuZUJxdldpZ2FYClF3eVVSVHM0dys1d29uQlRvcXhDOUg0ZmZHL29OdHFJRXRsVG8reFhiZ083Y2VpTUV6anVWQWJ0RCszWTlyMmwKZnQzOFIraXI1R2JvSUd2bUlqazlSbEQ3cTdQMExWNWtQUE5KTitPKzUyTXQ0NFNpd1BxWklQT2lHQXBnMjZ3SQpZQThlUk10MW5sRU5IR3Fxcm1VNjRxNHpMclRBSWhYOWpFdUFiTTNsUGNjb3hPRUZKVGRwa3Uwa0lzZkhVd3htCm9BUlhhaitDSnBGMVlVQjFwNU1DNE1QWXkrQWxzZ2tub0xNc0c5TU53SnBGTUYzcVNaZVF6NHBrZTV1amhkbjAKTGRHczd1ajh1a0UrVVJ5Wm1KbEVQQTNqakFnPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+        service:
+            name: kuma-control-plane
+            namespace: kuma-system
+            path: /default-kuma-io-v1alpha1-mesh
+      failurePolicy: Fail
+      name: mesh.defaulter.kuma-admission.kuma.io
+      rules:
+        - apiGroups:
+            - kuma.io
+          apiVersions:
+            - v1alpha1
+          operations:
+            - CREATE
+            - UPDATE
+          resources:
+            - meshes
+      sideEffects: None
+    - admissionReviewVersions:
+        - v1beta1
+      clientConfig:
+        caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURFRENDQWZpZ0F3SUJBZ0lSQU84Vm1ERnAvaVhBS0IzdXZON0ZjdDh3RFFZSktvWklodmNOQVFFTEJRQXcKRWpFUU1BNEdBMVVFQXhNSGEzVnRZUzFqWVRBZUZ3MHlNVEE0TURNeU16STBOVE5hRncwek1UQTRNREV5TXpJMApOVE5hTUJJeEVEQU9CZ05WQkFNVEIydDFiV0V0WTJFd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3CmdnRUtBb0lCQVFER2lRdXJZUDIyRnplK0FDWEdWaGZRemxERVJrSHJLTTVnTXhRTkcxMFRLT3RKOVJBQjV0VWYKSndGSUliYmNnSlRUa3diN20yQzIzOW5RODBYRXVBbFlheHhyZzY3MTZ4ZzlUdzA3WGNqTjV0eXV6dHBubWNPYgp4MmJWVXNaZFFzODhiWVF5SjdCcXExTFBURDZwd0czR0s0cWFOR2FHNjhrVThLZU5RVGE5eE4wcG5VR3ZWaldOCmVVSDZmVVFKNlQvajEvT1c0NFVmeFM1cndNL2huQ1lVWktzeFA1d3ZwNk5heThJUEVxbDhNNTkxTUxVc215clEKeUdiR2JaM0JERGZLWWhXbXp4enhucjkvZWlmRkVaWm9laE9MV01pbW9hWmdHdlhsWVhsSUVoV2NGRkhHaXI2LwpOOWV1M1R2MTA3NWRaL1RkOWpSR0orL3FDN2hpVEJ3VEFnTUJBQUdqWVRCZk1BNEdBMVVkRHdFQi93UUVBd0lDCnBEQWRCZ05WSFNVRUZqQVVCZ2dyQmdFRkJRY0RBUVlJS3dZQkJRVUhBd0l3RHdZRFZSMFRBUUgvQkFVd0F3RUIKL3pBZEJnTlZIUTRFRmdRVTJsMURrRGJXSmxhT2c0YnFjNUM2NHJpOVRsSXdEUVlKS29aSWh2Y05BUUVMQlFBRApnZ0VCQUJwa2hyTVhIQzdmQWd5S0ZnM2UzU3B6VWhQOTl5Y0dWQjdkdWxmcDJiVVVtNURyUXVuZUJxdldpZ2FYClF3eVVSVHM0dys1d29uQlRvcXhDOUg0ZmZHL29OdHFJRXRsVG8reFhiZ083Y2VpTUV6anVWQWJ0RCszWTlyMmwKZnQzOFIraXI1R2JvSUd2bUlqazlSbEQ3cTdQMExWNWtQUE5KTitPKzUyTXQ0NFNpd1BxWklQT2lHQXBnMjZ3SQpZQThlUk10MW5sRU5IR3Fxcm1VNjRxNHpMclRBSWhYOWpFdUFiTTNsUGNjb3hPRUZKVGRwa3Uwa0lzZkhVd3htCm9BUlhhaitDSnBGMVlVQjFwNU1DNE1QWXkrQWxzZ2tub0xNc0c5TU53SnBGTUYzcVNaZVF6NHBrZTV1amhkbjAKTGRHczd1ajh1a0UrVVJ5Wm1KbEVQQTNqakFnPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+        service:
+            name: kuma-control-plane
+            namespace: kuma-system
+            path: /owner-reference-kuma-io-v1alpha1
+      failurePolicy: Fail
+      name: owner-reference.kuma-admission.kuma.io
+      rules:
+        - apiGroups:
+            - kuma.io
+          apiVersions:
+            - v1alpha1
+          operations:
+            - CREATE
+          resources:
+            - circuitbreakers
+            - externalservices
+            - faultinjections
+            - healthchecks
+            - retries
+            - proxytemplates
+            - ratelimits
+            - trafficlogs
+            - trafficpermissions
+            - trafficroutes
+            - traffictraces
+      sideEffects: None
+    - admissionReviewVersions:
+        - v1beta1
+      clientConfig:
+        caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURFRENDQWZpZ0F3SUJBZ0lSQU84Vm1ERnAvaVhBS0IzdXZON0ZjdDh3RFFZSktvWklodmNOQVFFTEJRQXcKRWpFUU1BNEdBMVVFQXhNSGEzVnRZUzFqWVRBZUZ3MHlNVEE0TURNeU16STBOVE5hRncwek1UQTRNREV5TXpJMApOVE5hTUJJeEVEQU9CZ05WQkFNVEIydDFiV0V0WTJFd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3CmdnRUtBb0lCQVFER2lRdXJZUDIyRnplK0FDWEdWaGZRemxERVJrSHJLTTVnTXhRTkcxMFRLT3RKOVJBQjV0VWYKSndGSUliYmNnSlRUa3diN20yQzIzOW5RODBYRXVBbFlheHhyZzY3MTZ4ZzlUdzA3WGNqTjV0eXV6dHBubWNPYgp4MmJWVXNaZFFzODhiWVF5SjdCcXExTFBURDZwd0czR0s0cWFOR2FHNjhrVThLZU5RVGE5eE4wcG5VR3ZWaldOCmVVSDZmVVFKNlQvajEvT1c0NFVmeFM1cndNL2huQ1lVWktzeFA1d3ZwNk5heThJUEVxbDhNNTkxTUxVc215clEKeUdiR2JaM0JERGZLWWhXbXp4enhucjkvZWlmRkVaWm9laE9MV01pbW9hWmdHdlhsWVhsSUVoV2NGRkhHaXI2LwpOOWV1M1R2MTA3NWRaL1RkOWpSR0orL3FDN2hpVEJ3VEFnTUJBQUdqWVRCZk1BNEdBMVVkRHdFQi93UUVBd0lDCnBEQWRCZ05WSFNVRUZqQVVCZ2dyQmdFRkJRY0RBUVlJS3dZQkJRVUhBd0l3RHdZRFZSMFRBUUgvQkFVd0F3RUIKL3pBZEJnTlZIUTRFRmdRVTJsMURrRGJXSmxhT2c0YnFjNUM2NHJpOVRsSXdEUVlKS29aSWh2Y05BUUVMQlFBRApnZ0VCQUJwa2hyTVhIQzdmQWd5S0ZnM2UzU3B6VWhQOTl5Y0dWQjdkdWxmcDJiVVVtNURyUXVuZUJxdldpZ2FYClF3eVVSVHM0dys1d29uQlRvcXhDOUg0ZmZHL29OdHFJRXRsVG8reFhiZ083Y2VpTUV6anVWQWJ0RCszWTlyMmwKZnQzOFIraXI1R2JvSUd2bUlqazlSbEQ3cTdQMExWNWtQUE5KTitPKzUyTXQ0NFNpd1BxWklQT2lHQXBnMjZ3SQpZQThlUk10MW5sRU5IR3Fxcm1VNjRxNHpMclRBSWhYOWpFdUFiTTNsUGNjb3hPRUZKVGRwa3Uwa0lzZkhVd3htCm9BUlhhaitDSnBGMVlVQjFwNU1DNE1QWXkrQWxzZ2tub0xNc0c5TU53SnBGTUYzcVNaZVF6NHBrZTV1amhkbjAKTGRHczd1ajh1a0UrVVJ5Wm1KbEVQQTNqakFnPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+        service:
+            name: kuma-control-plane
+            namespace: kuma-system
+            path: /inject-sidecar
+      failurePolicy: Ignore
+      name: kuma-injector.kuma.io
+      rules:
+        - apiGroups:
+            - ""
+          apiVersions:
+            - v1
+          operations:
+            - CREATE
+          resources:
+            - pods
+      sideEffects: None

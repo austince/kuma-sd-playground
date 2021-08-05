@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+  annotations:
+    kuma.io/sidecar-injection: enabled
+    kuma.io/mesh: default

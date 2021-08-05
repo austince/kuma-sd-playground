@@ -1,0 +1,108 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    labels:
+        app: kuma-control-plane
+        app.kubernetes.io/instance: kuma
+        app.kubernetes.io/name: kuma
+    name: kuma-control-plane
+    namespace: kuma-system
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: kuma-control-plane
+            app.kubernetes.io/instance: kuma
+            app.kubernetes.io/name: kuma
+    strategy:
+        rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 0
+    template:
+        metadata:
+            annotations:
+                checksum/config: d197fa140fb2f04173c9f38a84787055696f859d2051b121a29b1fb6f20f5202
+                checksum/tls-secrets: bdfc59eb18de7eef485f2821593f34c4d826bc0023fefca34c01bdaafd8dcab1
+            labels:
+                app: kuma-control-plane
+                app.kubernetes.io/instance: kuma
+                app.kubernetes.io/name: kuma
+        spec:
+            containers:
+                - args:
+                    - run
+                    - --log-level=info
+                    - --config-file=/etc/kuma.io/kuma-control-plane/config.yaml
+                  env:
+                    - name: KUMA_API_SERVER_READ_ONLY
+                      value: "true"
+                    - name: KUMA_DEFAULTS_SKIP_MESH_CREATION
+                      value: "false"
+                    - name: KUMA_DP_SERVER_HDS_ENABLED
+                      value: "false"
+                    - name: KUMA_ENVIRONMENT
+                      value: kubernetes
+                    - name: KUMA_GENERAL_TLS_CERT_FILE
+                      value: /var/run/secrets/kuma.io/tls-cert/tls.crt
+                    - name: KUMA_GENERAL_TLS_KEY_FILE
+                      value: /var/run/secrets/kuma.io/tls-cert/tls.key
+                    - name: KUMA_INJECTOR_INIT_CONTAINER_IMAGE
+                      value: docker.io/kumahq/kuma-init:1.2.3
+                    - name: KUMA_MODE
+                      value: standalone
+                    - name: KUMA_RUNTIME_KUBERNETES_ADMISSION_SERVER_CERT_DIR
+                      value: /var/run/secrets/kuma.io/tls-cert
+                    - name: KUMA_RUNTIME_KUBERNETES_ADMISSION_SERVER_PORT
+                      value: "5443"
+                    - name: KUMA_RUNTIME_KUBERNETES_CONTROL_PLANE_SERVICE_NAME
+                      value: kuma-control-plane
+                    - name: KUMA_RUNTIME_KUBERNETES_INJECTOR_CA_CERT_FILE
+                      value: /var/run/secrets/kuma.io/tls-cert/ca.crt
+                    - name: KUMA_RUNTIME_KUBERNETES_INJECTOR_CNI_ENABLED
+                      value: "false"
+                    - name: KUMA_RUNTIME_KUBERNETES_INJECTOR_SIDECAR_CONTAINER_IMAGE
+                      value: docker.io/kumahq/kuma-dp:1.2.3
+                    - name: KUMA_STORE_KUBERNETES_SYSTEM_NAMESPACE
+                      value: kuma-system
+                    - name: KUMA_STORE_TYPE
+                      value: kubernetes
+                  image: docker.io/kumahq/kuma-cp:1.2.3
+                  imagePullPolicy: IfNotPresent
+                  livenessProbe:
+                    httpGet:
+                        path: /healthy
+                        port: 5680
+                  name: control-plane
+                  ports:
+                    - containerPort: 5681
+                    - containerPort: 5682
+                    - containerPort: 5443
+                    - containerPort: 5678
+                    - containerPort: 5653
+                      protocol: UDP
+                  readinessProbe:
+                    httpGet:
+                        path: /ready
+                        port: 5680
+                  resources:
+                    requests:
+                        cpu: 100m
+                        memory: 256Mi
+                  volumeMounts:
+                    - mountPath: /var/run/secrets/kuma.io/tls-cert
+                      name: general-tls-cert
+                      readOnly: true
+                    - mountPath: /etc/kuma.io/kuma-control-plane
+                      name: kuma-control-plane-config
+                      readOnly: true
+            nodeSelector:
+                kubernetes.io/arch: amd64
+                kubernetes.io/os: linux
+            serviceAccountName: kuma-control-plane
+            volumes:
+                - name: general-tls-cert
+                  secret:
+                    secretName: kuma-tls-cert
+                - configMap:
+                    name: kuma-control-plane-config
+                  name: kuma-control-plane-config

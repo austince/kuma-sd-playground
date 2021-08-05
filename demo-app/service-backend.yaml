@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    3001.service.kuma.io/protocol: http
+  labels:
+    app: backend
+  name: backend
+  namespace: kuma-demo
+spec:
+  ports:
+    - name: api
+      port: 3001
+  selector:
+    app: backend

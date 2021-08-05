@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kuma-demo-app
+  namespace: kuma-demo
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+      env: prod
+      version: v8
+  template:
+    metadata:
+      labels:
+        app: frontend
+        env: prod
+        version: v8
+    spec:
+      containers:
+        - args:
+            - -P
+            - http://backend:3001
+          image: kvn0218/kuma-demo-fe:latest
+          imagePullPolicy: IfNotPresent
+          name: kuma-fe

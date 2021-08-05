@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-v0
+  namespace: kuma-demo
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+      env: prod
+      version: v0
+  template:
+    metadata:
+      labels:
+        app: backend
+        env: prod
+        version: v0
+    spec:
+      containers:
+        - env:
+            - name: POSTGRES_HOST
+              value: postgres
+            - name: SPECIAL_OFFER
+              value: "false"
+            - name: REDIS_HOST
+              value: redis
+          image: kvn0218/kuma-demo-be:latest
+          imagePullPolicy: IfNotPresent
+          name: kuma-be
+          ports:
+            - containerPort: 3001
