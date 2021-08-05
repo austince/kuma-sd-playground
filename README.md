@@ -8,6 +8,7 @@ A small example of using Promethues's Kuma SD to securely monitor services.
   * `kuma-system` is the Kuma Control Plane's "system" namespace
   * `monitoring` and `kuma-demo` are for workloads, and configured to let Kuma inject a Dataplane Proxy Sidecar (Envoy) to all pods
 * Kuma 1.2.3 Control Plane (in [`./kuma-control-plane`](kuma-control-plane))
+* Kuma Policies for secure scraping (in [`./kuma-policies`](kuma-policies))
   * One `Mesh` with mTLS enabled
   * A `TrafficPermission` to allow all services to talk to all services
 * Prometheus (in [`./prometheus`](prometheus)), configured to discover targets from Kuma
