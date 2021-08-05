@@ -29,7 +29,8 @@ kubectl apply -f namespaces/
 kubectl apply -f kuma-control-plane/
 
 # Must wait for the control-plane to come up so it can inject the Kuma Dataplane Sidecar
-
+kubectl wait --for=condition=ContainersReady --namespace kuma-system pods --all
+ 
 kubectl apply -f prometheus/
 
 kubectl apply -f kuma-policies/
