@@ -77,9 +77,9 @@ In the Prometheus UI, check out:
 ```shell
 kubectl delete -f demo-app/
 
-kubectl delete -f kuma-policies/
-
 kubectl delete -f prometheus/
+
+kubectl delete -f kuma-policies/
 
 kubectl delete -f kuma-control-plane/
 
