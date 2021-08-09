@@ -35,7 +35,7 @@ spec:
               mountPath: /etc/config
               readOnly: true
         - name: prometheus-server
-          image: "austince/prometheus:v2.29-rc.0-fix2"
+          image: "prom/prometheus:v2.29.0-rc.2"
           imagePullPolicy: "Always"
           args:
             - --storage.tsdb.retention.time=15d
